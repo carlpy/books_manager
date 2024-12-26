@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+	user_id Int @id @default(autoincrement())
+	first_name String @db.VarChar(50)
+	last_name String @db.VarChar(50)
+	email String @db.VarChar(50)
+	password String @db.VarChar(100)
+	profile_pic Bytes @db.Blob
+
+	book reading_list[]
+	book_notes book_notes[]
+}
+
+model Books {
+	book_id String @id @db.VarChar(50) 
+	title String @db.VarChar(50)
+	authors String @db.VarChar(50)
+	published_date String @db.VarChar(50)
+	description String @db.Text
+	categories String @db.VarChar(80) /* this will be an string such as "Terror, Sci-fi, Philosophy" */
+	language String @db.Char(2) /* these are two chars because the ISO format for languages */
+	thumbnail_url String @db.VarChar(200)
+	page_count Int @db.Int
+
+	user reading_list[]
+	user_notes book_notes[]
+}
+
+model reading_list {
+	user_id Int @db.Int
+	user Users @relation(fields: [user_id], references: [user_id], onDelete: Restrict, onUpdate: Cascade)
+
+	book_id String @db.VarChar(50)
+	book Books @relation(fields: [book_id], references: [book_id], onDelete: Restrict, onUpdate: Cascade)
+
+	@@id([user_id, book_id])
+
+	added_at DateTime @db.Timestamp() @default(now())
+
+	started_at DateTime? @db.Timestamp()
+	finished_at DateTime? @db.Timestamp()
+	current_pages Int @db.Int
+}
+
+model book_notes {
+	book_note_id Int @id @default(autoincrement())
+	
+	user_id Int @db.Int
+	user Users @relation(fields: [user_id], references: [user_id], onDelete: Restrict, onUpdate: Cascade)
+
+	book_id String @db.VarChar(50)
+	book Books @relation(fields: [book_id], references: [book_id])
+
+	title String @db.VarChar(50)
+	title_chapter String @db.VarChar(50)
+	text String @db.Text
+	created_at DateTime @db.Timestamp() @default(now())
+	updated_at DateTime? @db.Timestamp() 
+}
+
+
