@@ -19,7 +19,7 @@ model Users {
 	last_name String @db.VarChar(50)
 	email String @db.VarChar(50)
 	password String @db.VarChar(100)
-	profile_pic Bytes @db.Blob
+	profile_pic Bytes? @db.MediumBlob
 
 	book reading_list[]
 	book_notes book_notes[]

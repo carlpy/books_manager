@@ -5,7 +5,8 @@
 	"type": "module",
   "scripts": {
     "start": "tsx src/",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+		"push": "prisma db push"
   },
   "keywords": [],
   "author": "",
